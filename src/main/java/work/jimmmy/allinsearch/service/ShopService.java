@@ -1,13 +1,17 @@
 package work.jimmmy.allinsearch.service;
 
+import work.jimmmy.allinsearch.api.exception.BusinessException;
+import work.jimmmy.allinsearch.model.ShopBo;
 import work.jimmmy.allinsearch.model.ShopModel;
 
 import java.util.List;
 
 public interface ShopService {
-    ShopModel create(ShopModel shopModel);
+    Object create(ShopModel shopModel) throws BusinessException;
 
-    ShopModel get(Integer id);
+    ShopBo get(Integer id);
 
-    List<ShopModel> selectAll();
+    List<ShopBo> selectAll();
+
+    Integer countAllShop();
 }

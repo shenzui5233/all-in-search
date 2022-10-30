@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CategoryMapper {
     List<CategoryModel> selectAll();
+
+    Integer countAllCategory();
 }

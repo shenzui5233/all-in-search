@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import sun.misc.BASE64Encoder;
-import work.jimmmy.allinsearch.api.common.CommonRes;
 import work.jimmmy.allinsearch.api.common.ErrorCodeEnum;
 import work.jimmmy.allinsearch.api.exception.BusinessException;
 import work.jimmmy.allinsearch.common.AdminPermission;
+import work.jimmmy.allinsearch.service.CategoryService;
+import work.jimmmy.allinsearch.service.SellerService;
+import work.jimmmy.allinsearch.service.ShopService;
 import work.jimmmy.allinsearch.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +37,15 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private ShopService shopService;
+
+    @Autowired
+    private SellerService sellerService;
+
     public static final String CURRENT_ADMIN_SESSION = "currentAdminSession";
 
     @RequestMapping("/index")
@@ -42,6 +53,9 @@ public class AdminController {
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView("/admin/admin/index");
         modelAndView.addObject("userCount", userService.countAllUser());
+        modelAndView.addObject("sellerCount", sellerService.countAllSeller());
+        modelAndView.addObject("categoryCount", categoryService.countAllCategory());
+        modelAndView.addObject("shopCount", shopService.countAllShop());
         modelAndView.addObject("CONTROLLER_NAME", "admin");
         modelAndView.addObject("ACTION_NAME", "admin");
         return modelAndView;

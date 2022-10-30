@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface SellerMapper {
     List<SellerModel> selectAll();
+
+    Integer countAllSeller();
 }
