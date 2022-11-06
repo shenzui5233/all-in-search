@@ -15,7 +15,10 @@ import work.jimmmy.allinsearch.service.CategoryService;
 import work.jimmmy.allinsearch.service.SellerService;
 import work.jimmmy.allinsearch.service.ShopService;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,11 +74,26 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public List<ShopBo> selectAll() {
-        List<ShopModel> shopModelList = shopMapper.selectAll();
-        return shopModelList
+        List<ShopBo> shopList = shopMapper.selectAll();
+        return shopList
                 .stream()
-                .map(item -> new ShopBo(item, sellerService.get(item.getSellerId()), categoryService.get(item.getCategoryId())))
+                .peek(item -> {
+                    item.setSellerModel(sellerService.get(item.getSellerId()));
+                    item.setCategoryModel(categoryService.get(item.getCategoryId()));
+                })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ShopBo> recommend(BigDecimal longitude, BigDecimal latitude) {
+        List<ShopBo> shopList = shopMapper.recommend(longitude, latitude);
+        shopList.forEach(shopBo -> {
+            SellerModel sellerModel = sellerService.get(shopBo.getSellerId());
+            CategoryModel categoryModel = categoryService.get(shopBo.getCategoryId());
+            shopBo.setSellerModel(sellerModel);
+            shopBo.setCategoryModel(categoryModel);
+        });
+        return shopList;
     }
 
     @Override

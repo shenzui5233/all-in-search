@@ -42,6 +42,8 @@ public class ShopBo {
 
     private String iconUrl;
 
+    private Integer distance;
+
     private CategoryModel categoryModel;
 
     private SellerModel sellerModel;

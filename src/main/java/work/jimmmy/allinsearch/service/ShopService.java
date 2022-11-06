@@ -4,6 +4,7 @@ import work.jimmmy.allinsearch.api.exception.BusinessException;
 import work.jimmmy.allinsearch.model.ShopBo;
 import work.jimmmy.allinsearch.model.ShopModel;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ShopService {
@@ -12,6 +13,8 @@ public interface ShopService {
     ShopBo get(Integer id);
 
     List<ShopBo> selectAll();
+
+    List<ShopBo> recommend(BigDecimal longitude, BigDecimal latitude);
 
     Integer countAllShop();
 }
