@@ -17,4 +17,6 @@ public interface ShopService {
     List<ShopBo> recommend(BigDecimal longitude, BigDecimal latitude);
 
     Integer countAllShop();
+
+    List<ShopBo> search(BigDecimal longitude, BigDecimal latitude, String keyword);
 }

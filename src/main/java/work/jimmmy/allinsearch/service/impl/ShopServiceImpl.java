@@ -16,9 +16,7 @@ import work.jimmmy.allinsearch.service.SellerService;
 import work.jimmmy.allinsearch.service.ShopService;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,5 +97,17 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public Integer countAllShop() {
         return shopMapper.countAllShop();
+    }
+
+    @Override
+    public List<ShopBo> search(BigDecimal longitude, BigDecimal latitude, String keyword) {
+        List<ShopBo> shopList = shopMapper.search(longitude, latitude, keyword);
+        shopList.forEach(shopBo -> {
+            SellerModel sellerModel = sellerService.get(shopBo.getSellerId());
+            CategoryModel categoryModel = categoryService.get(shopBo.getCategoryId());
+            shopBo.setSellerModel(sellerModel);
+            shopBo.setCategoryModel(categoryModel);
+        });
+        return shopList;
     }
 }
