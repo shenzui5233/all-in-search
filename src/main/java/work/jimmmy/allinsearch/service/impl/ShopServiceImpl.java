@@ -18,6 +18,7 @@ import work.jimmmy.allinsearch.service.ShopService;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -95,13 +96,18 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
+    public List<Map<String, Object>> searchGroupByTags(String keyword, Integer category, String tags) {
+        return shopMapper.searchGroupByTags(keyword, category, tags);
+    }
+
+    @Override
     public Integer countAllShop() {
         return shopMapper.countAllShop();
     }
 
     @Override
-    public List<ShopBo> search(BigDecimal longitude, BigDecimal latitude, String keyword, Integer orderby, Integer categoryId) {
-        List<ShopBo> shopList = shopMapper.search(longitude, latitude, keyword, orderby, categoryId);
+    public List<ShopBo> search(BigDecimal longitude, BigDecimal latitude, String keyword, Integer orderby, Integer categoryId, String tags) {
+        List<ShopBo> shopList = shopMapper.search(longitude, latitude, keyword, orderby, categoryId, tags);
         shopList.forEach(shopBo -> {
             SellerModel sellerModel = sellerService.get(shopBo.getSellerId());
             CategoryModel categoryModel = categoryService.get(shopBo.getCategoryId());

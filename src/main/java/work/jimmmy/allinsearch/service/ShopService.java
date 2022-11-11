@@ -6,6 +6,7 @@ import work.jimmmy.allinsearch.model.ShopModel;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface ShopService {
     Object create(ShopModel shopModel) throws BusinessException;
@@ -16,7 +17,9 @@ public interface ShopService {
 
     List<ShopBo> recommend(BigDecimal longitude, BigDecimal latitude);
 
+    List<Map<String, Object>> searchGroupByTags(String keyword, Integer category, String tags);
+
     Integer countAllShop();
 
-    List<ShopBo> search(BigDecimal longitude, BigDecimal latitude, String keyword, Integer orderby, Integer categoryId);
+    List<ShopBo> search(BigDecimal longitude, BigDecimal latitude, String keyword, Integer orderby, Integer categoryId, String tags);
 }

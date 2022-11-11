@@ -58,12 +58,25 @@
         <if test="categoryId != null">
             and category_id=#{categoryId}
         </if>
+        <if test="tags != null">
+            and tags = #{tags}
+        </if>
         <if test="orderby == null">
             order by (0.95*1/log10(distance)+ 0.05*remark_score/5)  DESC
         </if>
         <if test="orderby == 1">
             order by price_per_man ASC, id ASC
         </if>
+    </select>
 
+    <select id="searchGroupByTags" resultType="map">
+        select tags, count(1) as num from shop where name like CONCAT('%', #{keyword}, '%')
+        <if test="categoryId != null">
+            and category_id = #{categoryId}
+        </if>
+        <if test="tags != null">
+            and tags = #{tags}
+        </if>
+        group by tags
     </select>
 </mapper>

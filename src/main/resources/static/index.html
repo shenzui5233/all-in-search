@@ -235,10 +235,8 @@
                 <div id="categoryFilter" style="margin-bottom:10px;"></div>
                 <p>排序规则</p>
                 <div id="priceFilter" style="margin-bottom:10px;"></div>
-                <!--
                 <p>标签筛选</p>
                 <div id="tagsFilter" style="margin-bottom:10px;"></div>
-                -->
             </div>
         </div>
         <div class="home-tuan-list" id="searchList">
@@ -432,7 +430,7 @@
 
             var orderby = "";
             var categoryFilter = "";
-            //var tagFilter = "";
+            var tagFilter = "";
 
             var keyword = $("#keyword").val();
             var longitude = $("#longitude").val();
@@ -475,7 +473,7 @@
                         $("#slider").hide();
                         var dataList = data.data.shop;
                         var categoryList = data.data.category;
-                        //var tagsList = data.data.tags;
+                        var tagsList = data.data.tags;
                         for(var i = 0; i < dataList.length; i++){
                             var distance = dataList[i].distance;
                             var distanceStr = "";
@@ -528,23 +526,23 @@
                             g_orderby=1;
                             searchMethod();
                         });
-                        //
-                        // $("#tagsFilter").empty();
-                        // var tagTag = $("<span class='bubble' data-id='' id='tags'>全部</span>");
-                        // $("#tagsFilter").append(tagTag);
-                        // for(var i = 0; i < tagsList.length; i++){
-                        //     var tagTag = $("<span class='bubble' data-id='"+tagsList[i].tags+"' id='tags"+tagsList[i].tags+"'>"+tagsList[i].tags+"("+tagsList[i].num+")</span>");
-                        //     $("#tagsFilter").append(tagTag);
-                        // }
-                        // $("span[id^='tags']").on('click',function(){
-                        //     var id = $(this).data("id");
-                        //     if(id == ''){
-                        //         g_tagFilter = null;
-                        //     }else{
-                        //         g_tagFilter = id;
-                        //     }
-                        //     searchMethod();
-                        // });
+
+                        $("#tagsFilter").empty();
+                        var tagTag = $("<span class='bubble' data-id='' id='tags'>全部</span>");
+                        $("#tagsFilter").append(tagTag);
+                        for(var i = 0; i < tagsList.length; i++){
+                            var tagTag = $("<span class='bubble' data-id='"+tagsList[i].tags+"' id='tags"+tagsList[i].tags+"'>"+tagsList[i].tags+"("+tagsList[i].num+")</span>");
+                            $("#tagsFilter").append(tagTag);
+                        }
+                        $("span[id^='tags']").on('click',function(){
+                            var id = $(this).data("id");
+                            if(id == ''){
+                                g_tagFilter = null;
+                            }else{
+                                g_tagFilter = id;
+                            }
+                            searchMethod();
+                        });
                     }else{
                         alert("搜索失败，原因为"+data.data.errMsg);
                     }
