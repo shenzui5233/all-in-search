@@ -230,6 +230,16 @@
 
         <div class="guesstitle" id="searchTitle" style="font-size:14px;">
             <p id="resTitle" >搜索结果</p>
+            <div id="extraPadding" style="display:none;">
+                <p>分类过滤</p>
+                <div id="categoryFilter" style="margin-bottom:10px;"></div>
+                <p>排序规则</p>
+                <div id="priceFilter" style="margin-bottom:10px;"></div>
+                <!--
+                <p>标签筛选</p>
+                <div id="tagsFilter" style="margin-bottom:10px;"></div>
+                -->
+            </div>
         </div>
         <div class="home-tuan-list" id="searchList">
 
@@ -266,6 +276,10 @@
 
 
 <script type="text/javascript">
+    var g_orderby = null;
+    var g_categoryFilter = null;
+    var g_tagFilter = null;
+
     // 初始化sliderow
     window.onload = function() {
 
@@ -287,6 +301,7 @@
 
     jQuery(document).ready(function() {
         var g_currentUser = null;
+        $("#searchTitle").hide();
 
         var geolocation = new BMap.Geolocation();
         geolocation.getCurrentPosition(function(r){
@@ -417,7 +432,7 @@
 
             var orderby = "";
             var categoryFilter = "";
-            var tagFilter = "";
+            //var tagFilter = "";
 
             var keyword = $("#keyword").val();
             var longitude = $("#longitude").val();
@@ -430,22 +445,22 @@
                 alert("地址位置信息还未获取到，请等待");
                 return false;
             }
-            // if(g_orderby == null){
-            //     orderby = "";
-            // }else{
-            //     orderby = "&orderby="+g_orderby;
-            // }
-            //
-            // if(g_categoryFilter == null){
-            //     categoryFilter = "";
-            // }else{
-            //     categoryFilter = "&categoryId="+g_categoryFilter;
-            // }
-            // if(g_tagFilter == null){
-            //     tagFilter = "";
-            // }else{
-            //     tagFilter = "&tags="+g_tagFilter;
-            // }
+            if(g_orderby == null){
+                orderby = "";
+            }else{
+                orderby = "&orderby="+g_orderby;
+            }
+
+            if(g_categoryFilter == null){
+                categoryFilter = "";
+            }else{
+                categoryFilter = "&categoryId="+g_categoryFilter;
+            }
+            if(g_tagFilter == null){
+                tagFilter = "";
+            }else{
+                tagFilter = "&tags="+g_tagFilter;
+            }
             $.ajax({
                 type : "POST",
                 contentType : "application/json; charset=utf-8",
@@ -460,7 +475,7 @@
                         $("#slider").hide();
                         var dataList = data.data.shop;
                         var categoryList = data.data.category;
-                        var tagsList = data.data.tags;
+                        //var tagsList = data.data.tags;
                         for(var i = 0; i < dataList.length; i++){
                             var distance = dataList[i].distance;
                             var distanceStr = "";
@@ -482,37 +497,37 @@
                                 '<span class="price">'+dataList[i].pricePerMan+'</span></div> </div> </div> </div> </div></a>');
                             $("#searchList").append(content);
                         }
-                        // $("#categoryFilter").empty();
-                        // var categoryTag = $("<span class='bubble' data-id='"+0+"' id='category"+0+"'>全部</span>");
-                        // $("#categoryFilter").append(categoryTag);
-                        // for(var i = 0; i < categoryList.length; i++){
-                        //     var categoryTag = $("<span class='bubble' data-id='"+categoryList[i].id+"' id='category"+categoryList[i].id+"'>"+categoryList[i].name+"</span>");
-                        //     $("#categoryFilter").append(categoryTag);
-                        // }
-                        //
-                        //
-                        // $("span[id^='category']").on('click',function(){
-                        //     var id = $(this).data("id");
-                        //     if(id == 0){
-                        //         g_categoryFilter = null;
-                        //     }else{
-                        //         g_categoryFilter = id;
-                        //     }
-                        //     searchMethod();
-                        // });
-                        //
-                        // $("#priceFilter").empty();
-                        // $("#priceFilter").append($('<span class="bubble" id="defaultOrder">默认排序</span>'));
-                        // $("#priceFilter").append($('<span class="bubble" id="lowPriceOrder">低价排序</span>'));
-                        //
-                        // $("#defaultOrder").on('click',function(){
-                        //     g_orderby=null;
-                        //     searchMethod();
-                        // });
-                        // $("#lowPriceOrder").on('click',function(){
-                        //     g_orderby=1;
-                        //     searchMethod();
-                        // });
+                        $("#categoryFilter").empty();
+                        var categoryTag = $("<span class='bubble' data-id='"+0+"' id='category"+0+"'>全部</span>");
+                        $("#categoryFilter").append($("<span class='bubble' data-id='"+0+"' id='category"+0+"'>全部</span>"));
+                        for(var i = 0; i < categoryList.length; i++){
+                            var categoryTag = $("<span class='bubble' data-id='"+categoryList[i].id+"' id='category"+categoryList[i].id+"'>"+categoryList[i].name+"</span>");
+                            $("#categoryFilter").append(categoryTag);
+                        }
+
+
+                        $("span[id^='category']").on('click',function(){
+                            var id = $(this).data("id");
+                            if(id == 0){
+                                g_categoryFilter = null;
+                            }else{
+                                g_categoryFilter = id;
+                            }
+                            searchMethod();
+                        });
+
+                        $("#priceFilter").empty();
+                        $("#priceFilter").append($('<span class="bubble" id="defaultOrder">默认排序</span>'));
+                        $("#priceFilter").append($('<span class="bubble" id="lowPriceOrder">低价排序</span>'));
+
+                        $("#defaultOrder").on('click',function(){
+                            g_orderby=null;
+                            searchMethod();
+                        });
+                        $("#lowPriceOrder").on('click',function(){
+                            g_orderby=1;
+                            searchMethod();
+                        });
                         //
                         // $("#tagsFilter").empty();
                         // var tagTag = $("<span class='bubble' data-id='' id='tags'>全部</span>");
@@ -544,6 +559,10 @@
             if(event.keyCode == 13) {
                 searchMethod();
             }
+        });
+
+        $("#resTitle").on("click", function () {
+            $("#extraPadding").toggle(500);
         });
     });
 </script>

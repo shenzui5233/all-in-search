@@ -100,8 +100,8 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public List<ShopBo> search(BigDecimal longitude, BigDecimal latitude, String keyword) {
-        List<ShopBo> shopList = shopMapper.search(longitude, latitude, keyword);
+    public List<ShopBo> search(BigDecimal longitude, BigDecimal latitude, String keyword, Integer orderby, Integer categoryId) {
+        List<ShopBo> shopList = shopMapper.search(longitude, latitude, keyword, orderby, categoryId);
         shopList.forEach(shopBo -> {
             SellerModel sellerModel = sellerService.get(shopBo.getSellerId());
             CategoryModel categoryModel = categoryService.get(shopBo.getCategoryId());

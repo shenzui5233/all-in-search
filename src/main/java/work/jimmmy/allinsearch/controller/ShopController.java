@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import work.jimmmy.allinsearch.api.common.CommonRes;
 import work.jimmmy.allinsearch.api.common.ErrorCodeEnum;
 import work.jimmmy.allinsearch.api.exception.BusinessException;
+import work.jimmmy.allinsearch.model.CategoryModel;
 import work.jimmmy.allinsearch.model.ShopBo;
 import work.jimmmy.allinsearch.service.CategoryService;
 import work.jimmmy.allinsearch.service.SellerService;
@@ -24,6 +25,9 @@ import java.util.Map;
 public class ShopController {
     @Autowired
     private ShopService shopService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 推荐服务v1.0
@@ -45,13 +49,19 @@ public class ShopController {
 
     @RequestMapping("/search")
     @ResponseBody
-    public CommonRes search(@RequestParam(name = "longitude") BigDecimal longitude, @RequestParam(name = "latitude") BigDecimal latitude, @RequestParam(name = "keyword") String keyword) throws BusinessException {
+    public CommonRes search(@RequestParam(name = "longitude") BigDecimal longitude,
+                            @RequestParam(name = "latitude") BigDecimal latitude,
+                            @RequestParam(name = "keyword") String keyword,
+                            @RequestParam(name = "orderby", required = false) Integer orderby,
+                            @RequestParam(name = "categoryId", required = false) Integer categoryId) throws BusinessException {
         if (StringUtils.isEmpty(keyword) || longitude == null || latitude == null) {
             throw new BusinessException(ErrorCodeEnum.PARAMETER_VALIDATION_ERROR);
         }
-        List<ShopBo> shopBoList = shopService.search(longitude, latitude, keyword);
+        List<ShopBo> shopBoList = shopService.search(longitude, latitude, keyword, orderby, categoryId);
+        List<CategoryModel> categoryModelList = categoryService.selectAll();
         Map<String, Object> resMap = new HashMap<>();
         resMap.put("shop", shopBoList);
+        resMap.put("category", categoryModelList);
         return CommonRes.create(resMap);
     }
 }

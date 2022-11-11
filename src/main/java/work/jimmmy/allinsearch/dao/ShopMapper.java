@@ -13,5 +13,9 @@ public interface ShopMapper {
 
     List<ShopBo> recommend(@Param("longitude") BigDecimal longitude, @Param("latitude") BigDecimal latitude);
 
-    List<ShopBo> search(@Param("longitude") BigDecimal longitude, @Param("latitude") BigDecimal latitude, @Param("keyword") String keyword);
+    List<ShopBo> search(@Param("longitude") BigDecimal longitude,
+                        @Param("latitude") BigDecimal latitude,
+                        @Param("keyword") String keyword,
+                        @Param("orderby") Integer orderby,
+                        @Param("categoryId") Integer categoryId);
 }
