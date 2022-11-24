@@ -15,6 +15,7 @@ import work.jimmmy.allinsearch.service.CategoryService;
 import work.jimmmy.allinsearch.service.SellerService;
 import work.jimmmy.allinsearch.service.ShopService;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -54,11 +55,12 @@ public class ShopController {
                             @RequestParam(name = "keyword") String keyword,
                             @RequestParam(name = "orderby", required = false) Integer orderby,
                             @RequestParam(name = "categoryId", required = false) Integer categoryId,
-                            @RequestParam(name = "tags", required = false) String tags) throws BusinessException {
+                            @RequestParam(name = "tags", required = false) String tags) throws BusinessException, IOException {
         if (StringUtils.isEmpty(keyword) || longitude == null || latitude == null) {
             throw new BusinessException(ErrorCodeEnum.PARAMETER_VALIDATION_ERROR);
         }
-        List<ShopBo> shopBoList = shopService.search(longitude, latitude, keyword, orderby, categoryId, tags);
+        //List<ShopBo> shopBoList = shopService.search(longitude, latitude, keyword, orderby, categoryId, tags);
+        List<ShopBo> shopBoList = (List<ShopBo>) shopService.searchEs(longitude, latitude, keyword, orderby, categoryId, tags).get("shop");
         List<CategoryModel> categoryModelList = categoryService.selectAll();
         List<Map<String, Object>> tagsAggregation = shopService.searchGroupByTags(keyword, categoryId, tags);
         Map<String, Object> resMap = new HashMap<>();
