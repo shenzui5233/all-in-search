@@ -207,6 +207,17 @@ public class ShopServiceImpl implements ShopService {
                 .getJSONObject("bool").getJSONArray("must").getJSONObject(queryIndex)
                 .getJSONObject("term").put("seller_disabled_flag", 0);
 
+        if (tags != null) {
+            queryIndex++;
+            jsonRequestObj.getJSONObject("query").getJSONObject("function_score").getJSONObject("query")
+                    .getJSONObject("bool").getJSONArray("must").add(new JSONObject());
+            jsonRequestObj.getJSONObject("query").getJSONObject("function_score").getJSONObject("query")
+                    .getJSONObject("bool").getJSONArray("must").getJSONObject(queryIndex).put("term", new JSONObject());
+            jsonRequestObj.getJSONObject("query").getJSONObject("function_score").getJSONObject("query")
+                    .getJSONObject("bool").getJSONArray("must").getJSONObject(queryIndex)
+                    .getJSONObject("term").put("tags", tags);
+        }
+
         if (categoryId != null) {
             // 构建第三个条件
             queryIndex++;
@@ -293,11 +304,18 @@ public class ShopServiceImpl implements ShopService {
            jsonRequestObj.getJSONArray("sort").getJSONObject(0).getJSONObject("_score").put("order", "asc");
         }
 
+        // 聚合字段
+        jsonRequestObj.put("aggs", new JSONObject());
+        jsonRequestObj.getJSONObject("aggs").put("group_by_tags", new JSONObject());
+        jsonRequestObj.getJSONObject("aggs").getJSONObject("group_by_tags").put("terms", new JSONObject());
+        jsonRequestObj.getJSONObject("aggs").getJSONObject("group_by_tags").getJSONObject("terms").put("field", "tags");
+
         String reqJson = jsonRequestObj.toJSONString();
         request.setJsonEntity(reqJson);
         Response response = restHighLevelClient.getLowLevelClient().performRequest(request);
         String responseStr = EntityUtils.toString(response.getEntity());
         System.out.println(responseStr);
+        // 解析es返回的门店数据
         JSONObject jsonObject = JSONObject.parseObject(responseStr);
         JSONArray jsonArray = jsonObject.getJSONObject("hits").getJSONArray("hits");
         List<ShopBo> shopList = new ArrayList<>();
@@ -312,6 +330,19 @@ public class ShopServiceImpl implements ShopService {
         }
         //List<ShopBo> shopList = shopIdList.stream().map(this::get).collect(Collectors.toList());
         result.put("shop", shopList);
+
+        // 解析es返回的聚合数据
+        List<Map<String, Object>> tagList = new ArrayList<>();
+        JSONArray tagJsonArray = jsonObject.getJSONObject("aggregations").getJSONObject("group_by_tags")
+                .getJSONArray("buckets");
+        for (int i = 0; i < tagJsonArray.size(); i++) {
+            JSONObject jsonObj = tagJsonArray.getJSONObject(i);
+            Map<String, Object> tagMap = new HashMap<>();
+            tagMap.put("tags", jsonObj.getString("key"));
+            tagMap.put("num", jsonObj.getString("doc_count"));
+            tagList.add(tagMap);
+        }
+        result.put("tags", tagList);
         return result;
     }
 }

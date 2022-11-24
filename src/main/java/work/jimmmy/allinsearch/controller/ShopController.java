@@ -60,9 +60,10 @@ public class ShopController {
             throw new BusinessException(ErrorCodeEnum.PARAMETER_VALIDATION_ERROR);
         }
         //List<ShopBo> shopBoList = shopService.search(longitude, latitude, keyword, orderby, categoryId, tags);
-        List<ShopBo> shopBoList = (List<ShopBo>) shopService.searchEs(longitude, latitude, keyword, orderby, categoryId, tags).get("shop");
+        Map<String, Object> resultMap = shopService.searchEs(longitude, latitude, keyword, orderby, categoryId, tags);
+        List<ShopBo> shopBoList = (List<ShopBo>) resultMap.get("shop");
         List<CategoryModel> categoryModelList = categoryService.selectAll();
-        List<Map<String, Object>> tagsAggregation = shopService.searchGroupByTags(keyword, categoryId, tags);
+        List<Map<String, Object>> tagsAggregation = (List<Map<String, Object>>) resultMap.get("tags");
         Map<String, Object> resMap = new HashMap<>();
         resMap.put("shop", shopBoList);
         resMap.put("category", categoryModelList);
